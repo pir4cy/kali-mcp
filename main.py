@@ -1,7 +1,5 @@
-# main.py
-
-from mcp.server.fastmcp import FastMCP, Context, Image
 from contextlib import asynccontextmanager
+from mcp.server.fastmcp import FastMCP, Context, Image
 import os
 import asyncio
 import logging
@@ -57,7 +55,7 @@ async def server_lifespan(server):
             if os.system(f"which {tool} > /dev/null 2>&1") == 0:
                 available_tools[category].append(tool)
                 
-    logger.info(f"Available tools: {json.dumps(available_tools, indent=2)}")
+    logger.info("Available tools: %s", json.dumps(available_tools, indent=2))
     
     yield {"available_tools": available_tools}
     
@@ -74,9 +72,12 @@ async def server_lifespan(server):
 mcp.lifespan = server_lifespan
 
 @mcp.resource("tools://categories")
-def get_tool_categories(ctx: Context) -> str:
+def get_tool_categories() -> str:
     """Get all available tool categories"""
-    available_tools = ctx.lifespan_context["available_tools"]
+    # Access available_tools differently, perhaps through a global variable
+    # or use mcp.get_context() if available
+    global mcp
+    available_tools = mcp.lifespan_context["available_tools"]
     result = "# Available Kali Tool Categories\n\n"
     
     for category, tools in available_tools.items():

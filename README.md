@@ -47,6 +47,14 @@ python main.py
   }
 }
 ```
+## Security Considerations
+This tool is for legitimate security research and testing only
+Only run against systems you own or have permission to test
+The server implements safety checks to prevent dangerous commands
+Some tools may require root privileges to run effectively.  
+
+## License
+MIT License
 
 ## Using KaliMCP
 

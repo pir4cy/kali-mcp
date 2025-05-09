@@ -98,15 +98,18 @@ async def run_tool(ctx: Context, tool_name: str, arguments: str = "", analysis: 
         arguments: Command line arguments for the tool
         analysis: Type of output analysis - "concise", "detailed", or "none"
     """
-    available_tools = ctx.lifespan_context["available_tools"]
+    try:
+        available_tools = ctx.lifespan_context.get("available_tools", {})
+    except (AttributeError, KeyError) as e:
+        return f"Error accessing tool database: {str(e)}"
     
     # Flatten available tools for lookup
     all_tools = []
-    for tools in available_tools.values():
-        all_tools.extend(tools)
+    for category_tools in available_tools.values():
+        all_tools.extend(category_tools)
     
-    if tool_name not in all_tools:
-        return f"Error: Tool '{tool_name}' is not available. Run 'list_tools' to see available tools."
+    if not tool_name in all_tools:
+        return f"Error: Tool '{tool_name}' is not available. Use 'discover_tools' to see available tools."
     
     # Build and validate command
     cmd = build_command(tool_name, arguments)
